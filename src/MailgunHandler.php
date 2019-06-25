@@ -49,24 +49,30 @@ class MailgunHandler extends MailHandler
      */
     protected $subject;
 
-    public function __construct(string $subject, string $to = null, $level = Logger::WARNING, bool $bubble = true)
+    public function __construct(string $subject, string $from = null, string $to = null, $level = Logger::ERROR, bool $bubble = true)
     {
         $dotenv = new Dotenv();
         $dotenv->load(getcwd() . '/.env');
+        if(!key_exists("MAILGUN_API_KEY", $_ENV)){
+            throw new \Exception('"MAILGUN_API_KEY" is not set on .env file');
+        }
         $this->mg = Mailgun::create($_ENV['MAILGUN_API_KEY']);
+
+        if(!key_exists("MAILGUN_DOMAIN", $_ENV)){
+            throw new \Exception('"MAILGUN_DOMAIN" is not set on .env file');
+        }
+
         $this->domain = $_ENV['MAILGUN_DOMAIN'];
-        $this->from = $_ENV['MAILGUN_SENDER'];
+        $this->from = $from ?? $_ENV['MAILGUN_FROM'];
         $this->to = $to ?? $_ENV['MAILGUN_TO'];
-        $this->subject = $subject;
+        $this->subject = $subject
+        ;
         parent::__construct($level, $bubble);
     }
 
     protected function send($content, array $record) : void
     {
-        $f = function ($item) {
-            $h = new HtmlFormatter();
-            return $h->format($item);
-        };
+        $f = function($item){$h = new HtmlFormatter(); return $h->format($item);};
         $this->mg->messages()->send($this->domain, [
             'from' => $this->from,
             'to' => $this->to,
