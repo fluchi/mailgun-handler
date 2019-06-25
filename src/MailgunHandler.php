@@ -65,8 +65,7 @@ class MailgunHandler extends MailHandler
         $this->domain = $_ENV['MAILGUN_DOMAIN'];
         $this->from = $from ?? $_ENV['MAILGUN_FROM'];
         $this->to = $to ?? $_ENV['MAILGUN_TO'];
-        $this->subject = $subject
-        ;
+        $this->subject = $subject;
         parent::__construct($level, $bubble);
     }
 
