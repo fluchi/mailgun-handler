@@ -15,6 +15,7 @@ use Symfony\Component\Dotenv\Dotenv;
 
 class EnvTest extends \PHPUnit\Framework\TestCase
 {
+
     public function testNoEnvFile()
     {
         $this->assertTrue(file_exists(getcwd() . '/.env'), 'Create the .env file on the root of your project');
@@ -27,13 +28,13 @@ class EnvTest extends \PHPUnit\Framework\TestCase
 
         $this->assertArrayHasKey('MAILGUN_API_KEY', $_SERVER);
         $this->assertArrayHasKey('MAILGUN_DOMAIN', $_SERVER);
-        $this->assertArrayHasKey('MAILGUN_SENDER', $_SERVER);
+        $this->assertArrayHasKey('MAILGUN_FROM', $_SERVER);
 
         $this->assertIsString('string', $_SERVER['MAILGUN_API_KEY']);
         $this->assertIsString('string', $_SERVER['MAILGUN_DOMAIN']);
-        $this->assertIsString('string', $_SERVER['MAILGUN_SENDER']);
+        $this->assertIsString('string', $_SERVER['MAILGUN_FROM']);
 
-        if (key_exists('MAILGUN_TO', $_SERVER)) {
+        if(key_exists('MAILGUN_TO', $_SERVER)){
             $this->assertIsString('string', $_SERVER['MAILGUN_TO']);
         }
     }
